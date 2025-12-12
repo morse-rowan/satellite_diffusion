@@ -3,9 +3,37 @@ import os
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw
 from model import Unet
-from diffusion import Diffusion
+from diffusion import DDPM, DDIM
 from utils import create_dir
+
+def create_gif(samples_history, save_path, fps=20):
+    frames = []
+    timesteps = len(samples_history)
+    
+    if np.allclose(samples_history[0], samples_history[-1], atol=1e-4):
+        print("Warning: GIF frames are identical. Diffusion might not be working.")
+
+    for t_idx, img_data in enumerate(samples_history):
+        img_data = np.clip((img_data + 1.0) * 0.5, 0, 1)
+        img_data = np.transpose(img_data, (1, 2, 0)) # H, W, C
+        img_uint8 = (img_data * 255).astype(np.uint8)
+        
+        pil_img = Image.fromarray(img_uint8)
+        
+        draw = ImageDraw.Draw(pil_img)
+        current_ts = timesteps - 1 - t_idx
+                
+        frames.append(pil_img)
+        
+    frames[0].save(
+        save_path,
+        save_all=True,
+        append_images=frames[1:],
+        duration=1000/fps,
+        loop=0
+    )
 
 def create_model(opts):
     """builds the generators."""
@@ -28,7 +56,10 @@ def main(opts):
     create_dir(opts.sample_dir)
 
     # initialize diffusion
-    diffusion = Diffusion(timesteps=opts.denoising_steps)
+    if opts.sampling_method == 'ddim':
+        diffusion = DDIM(timesteps=opts.denoising_steps, eta=opts.eta)
+    else:
+        diffusion = DDPM(timesteps=opts.denoising_steps)
 
     # create model
     U = create_model(opts)
@@ -84,6 +115,12 @@ def main(opts):
             plt.close()
             print(f"Saved sample to {save_path}")
 
+            if opts.save_gif:
+                sample_history = [s[i] for s in samples]
+                gif_path = os.path.join(opts.sample_dir, f"sample_{total_generated + i}.gif")
+                create_gif(sample_history, gif_path)
+                print(f"Saved gif to {gif_path}")
+
         total_generated += current_batch_size
         batch_index += 1
 
@@ -98,6 +135,9 @@ if __name__ == '__main__':
     parser.add_argument("--checkpoint_file", type=str, default=None, help="path to specific checkpoint file (overrides checkpoint_dir)")
     parser.add_argument("--seed", type=int, default=None, help="optional seed; omit for fresh randomness each run")
     parser.add_argument("--sample_dir", type=str, default="./samples")
+    parser.add_argument("--sampling_method", type=str, default="ddpm", choices=["ddpm", "ddim"])
+    parser.add_argument("--eta", type=float, default=0.0, help="eta for ddim sampling")
+    parser.add_argument("--save_gif", action="store_true")
     
     args = parser.parse_args()
     main(args)

@@ -8,7 +8,7 @@ def extract(a, t, x_shape):
     out = a.gather(-1, t.cpu())
     return out.reshape(batch_size, *((1,) * (len(x_shape) - 1))).to(t.device)
 
-class Diffusion:
+class DDPM:
     def __init__(self, timesteps=500, beta_start=0.0001, beta_end=0.02):
         self.timesteps = timesteps
         self.beta_start = beta_start
@@ -95,3 +95,34 @@ class Diffusion:
     @torch.no_grad()
     def sample(self, model, image_size, batch_size=16, channels=3):
         return self.p_sample_loop(model, shape=(batch_size, channels, image_size, image_size))
+
+class DDIM(DDPM):
+    def __init__(self, timesteps=500, beta_start=0.0001, beta_end=0.02, eta=0.0):
+        super().__init__(timesteps, beta_start, beta_end)
+        self.eta = eta
+
+    @torch.no_grad()
+    def p_sample(self, model, x, t, t_index):
+        # extract values
+        alpha_t = extract(self.alphas_cumprod, t, x.shape)
+        alpha_t_prev = extract(self.alphas_cumprod_prev, t, x.shape)
+        sqrt_one_minus_alpha_t = extract(self.sqrt_one_minus_alphas_cumprod, t, x.shape)
+        sqrt_alpha_t = extract(self.sqrt_alphas_cumprod, t, x.shape)
+
+        # predict noise
+        pred_noise = model(x, t)
+
+        # predict x0
+        pred_x0 = (x - sqrt_one_minus_alpha_t * pred_noise) / sqrt_alpha_t
+
+        # calculate direction pointing to xt
+        sigma_t = self.eta * torch.sqrt((1 - alpha_t_prev) / (1 - alpha_t) * (1 - alpha_t / alpha_t_prev))
+        dir_xt = torch.sqrt(1.0 - alpha_t_prev - sigma_t**2) * pred_noise
+
+        # random noise
+        noise = sigma_t * torch.randn_like(x)
+
+        # calculate x_{t-1}
+        x_prev = torch.sqrt(alpha_t_prev) * pred_x0 + dir_xt + noise
+        return x_prev
+

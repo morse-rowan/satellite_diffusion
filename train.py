@@ -7,7 +7,7 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
 from model import Unet
-from diffusion import Diffusion
+from diffusion import DDPM
 from dataset import get_data_loader
 from utils import create_dir, to_var, EMA
 from torch.amp import autocast, GradScaler
@@ -25,7 +25,7 @@ def training_loop(train_dataloader, opts, logger):
     """runs the training loop."""
     
     # Initialize Diffusion
-    diffusion = Diffusion(timesteps=opts.denoising_steps)
+    diffusion = DDPM(timesteps=opts.denoising_steps)
 
     # Create model
     U = create_model(opts)
