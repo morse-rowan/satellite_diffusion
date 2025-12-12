@@ -1,8 +1,8 @@
 # Satellite Image Generator 🛰️
 Quick hack I put together. Diffusion (DDIM or DDPM) from scratch to generate sentinel-2 10m resolution synthetic imagery. Images generated are only 64x64px.  
 
-## Sample Generations
-| Final Result | Generation Process Gif (upscaled to 256px)|
+## Sample Generations (Upscaled from 64x64px -> 256x256px) 
+| Final Result | Generation Process GIF|
 | :---: | :---: |
 | <img src="sample-gifs/sample_0.png" width="256" height="256" /> | <img src="sample-gifs/sample_0.gif" width="256" height="256" /> |
 | <img src="sample-gifs/sample_1.png" width="256" height="256" /> | <img src="sample-gifs/sample_1.gif" width="256" height="256" /> |
