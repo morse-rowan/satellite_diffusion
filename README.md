@@ -12,7 +12,7 @@ In the future (when my google colab credits refresh), I plan on trying the follo
 ## Results - 60 epochs, > 20,000 steps
 <img width="1259" height="1252" alt="download" src="https://github.com/user-attachments/assets/12155c06-d512-4cb4-b2fb-4339e4954806" />
 
-## Sample Generations (Upscaled from 64x64px -> 256x256px) 
+## Sample Generations (Look pixelated because upscaled) 
 | Final Result | Generation Process GIF|
 | :---: | :---: |
 | <img src="sample-gifs/sample_0.png" width="256" height="256" /> | <img src="sample-gifs/sample_0.gif" width="256" height="256" /> |
