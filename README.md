@@ -3,10 +3,11 @@
 Quick hack I put together. Diffusion (DDIM or DDPM) from scratch to generate sentinel-2 10m resolution synthetic imagery. Images generated are only 64x64px. Took 2 hours to train on A100. 
 
 In the future (when my google colab credits refresh), I plan on trying the following:
-  1. Increasing image size (e.g. 128px, 256px) 
-  2. Use higher resolution satellite images (NAIP, 1m resolution)
-  3. Use text embeddings to guide image generation (maybe simple biomes like "urban" or "desert")
-  4. Cleanup data to have less variability 
+  1. Increasing image size (e.g. 128px, 256px)
+  2. Latent Diffusion, to enable larger images sizes. 
+  3. Use higher resolution satellite images (NAIP, 1m resolution)
+  4. Use text embeddings to guide image generation (maybe simple biomes like "urban" or "desert")
+  5. Cleanup data to have less variability 
 
 
 ## Results - 60 epochs, > 20,000 steps
