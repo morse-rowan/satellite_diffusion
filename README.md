@@ -1,8 +1,20 @@
 # Satellite Image Generator 🛰️
-Quick hack I put together. Diffusion (DDIM or DDPM) from scratch to generate sentinel-2 10m resolution synthetic imagery. Images generated are only 64x64px.  
+## Description
+Quick hack I put together. Diffusion (DDIM or DDPM) from scratch to generate sentinel-2 10m resolution synthetic imagery. Images generated are only 64x64px. Took 2 hours to train on A100. 
 
-## Sample Generations
-| Final Result | Generation Process Gif (upscaled to 256px)|
+In the future (when my google colab credits refresh), I plan on trying the following:
+  1. Increasing image size (e.g. 128px, 256px)
+  2. Latent Diffusion, to enable larger images sizes. 
+  3. Use higher resolution satellite images (NAIP, 1m resolution)
+  4. Use text embeddings to guide image generation (maybe simple biomes like "urban" or "desert")
+  5. Cleanup data to have less variability 
+
+
+## Results - 60 epochs, > 20,000 steps
+<img width="1259" height="1252" alt="download" src="https://github.com/user-attachments/assets/12155c06-d512-4cb4-b2fb-4339e4954806" />
+
+## Sample Generations (Look pixelated because upscaled) 
+| Final Result | Generation Process GIF|
 | :---: | :---: |
 | <img src="sample-gifs/sample_0.png" width="256" height="256" /> | <img src="sample-gifs/sample_0.gif" width="256" height="256" /> |
 | <img src="sample-gifs/sample_1.png" width="256" height="256" /> | <img src="sample-gifs/sample_1.gif" width="256" height="256" /> |
@@ -21,7 +33,5 @@ Quick hack I put together. Diffusion (DDIM or DDPM) from scratch to generate sen
 | <img src="sample-gifs/sample_14.png" width="256" height="256" /> | <img src="sample-gifs/sample_14.gif" width="256" height="256" /> |
 | <img src="sample-gifs/sample_15.png" width="256" height="256" /> | <img src="sample-gifs/sample_15.gif" width="256" height="256" /> |
 
-## Results - 60 epochs, > 20,000 steps
-<img width="1259" height="1252" alt="download" src="https://github.com/user-attachments/assets/12155c06-d512-4cb4-b2fb-4339e4954806" />
 
 
